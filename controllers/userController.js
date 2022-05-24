@@ -1,16 +1,15 @@
-const { User, Thought } = require('../models');
-const { ObjectId } = require("mongoose").mongo
+const {User, Thought} = require('../models');
 
 module.exports = {
   // Get all courses
   getUsers(req, res) {
     User.find()
-      .then((users) => res.json(users))
+      .then((Users) => res.json(Users))
       .catch((err) => res.status(500).json(err));
   },
   // Get a course
   getSingleUser(req, res) {
-    User.findOne({ _id: req.params.user_id })
+    User.findOne({ _id: req.params.userId })
       .select('-__v')
       .then((User) =>
         !User
@@ -22,7 +21,7 @@ module.exports = {
   // Create a course
   createUser(req, res) {
     User.create(req.body)
-      .then((user) => res.json(user))
+      .then((User) => res.json(User))
       .catch((err) => {
         console.log(err);
         return res.status(500).json(err);
@@ -30,9 +29,9 @@ module.exports = {
   },
   // Delete a course
   deleteUser(req, res) {
-    User.findOneAndDelete({ _id: req.params.user_id })
-      .then((course) =>
-        !course
+    User.findOneAndDelete({ _id: req.params.userId })
+      .then((user) =>
+        !user
           ? res.status(404).json({ message: 'No user with that ID' })
           : user.deleteMany({ _id: { $in: course.users } })
       )
@@ -76,14 +75,14 @@ module.exports = {
   removeFriend(req, res) {
     Friend.findOneAndUpdate(
       { _id: req.params.friendId },
-      { $pull: { assignment: { assignmentId: req.params.friend_id } } },
+      { $pull: { assignment: { assignmentId: req.params.friendId } } },
       { runValidators: true, new: true }
     )
-      .then((student) =>
-        !student
+      .then((friend) =>
+        !friend
           ? res
             .status(404)
-            .json({ message: 'No student found with that ID :(' })
+            .json({ message: 'No friend found with that ID :(' })
           : res.json(student)
       )
       .catch((err) => res.status(500).json(err))

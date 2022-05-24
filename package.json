@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/erict001/Social-Network/issues"
   },
-  "homepage": "https://github.com/erict001/Social-Network#readme"
+  "homepage": "https://github.com/erict001/Social-Network#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.3.4",
+    "nodemon": "^2.0.16"
+  }
 }

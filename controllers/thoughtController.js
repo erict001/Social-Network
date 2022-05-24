@@ -1,4 +1,4 @@
-const { User, Thought } = require('../models');
+const {User, Thought} = require('../models');
 
 module.exports = {
   // Get all courses
@@ -9,12 +9,12 @@ module.exports = {
   },
   // Get a course
   getSingleThought(req, res) {
-    Thought.findOne({ _id: req.params.thought_id })
+    Thought.findOne({ _id: req.params.thoughtId })
       .select('-__v')
       .then((Thought) =>
         !Thought
           ? res.status(404).json({ message: 'No thought with that ID' })
-          : res.json(course)
+          : res.json(Thought)
       )
       .catch((err) => res.status(500).json(err));
   },
@@ -29,7 +29,7 @@ module.exports = {
   },
   // Delete a course
   deleteThought(req, res) {
-    Thought.findOneAndDelete({ _id: req.params.thought_id })
+    Thought.findOneAndDelete({ _id: req.params.thoughtId })
       .then((course) =>
         !course
           ? res.status(404).json({ message: 'No thought with that ID' })
@@ -38,10 +38,10 @@ module.exports = {
       .then(() => res.json({ message: 'Thoughts and users are deleted!' }))
       .catch((err) => res.status(500).json(err));
   },
-  // Update a course
+  // Update a thought
   updateThought(req, res) {
     Thought.findOneAndUpdate(
-      { _id: req.params.thought_id },
+      { _id: req.params.thoughtId },
       { $set: req.body },
       { runValidators: true, new: true }
     )
@@ -75,7 +75,7 @@ module.exports = {
   removeReaction(req, res) {
     Reaction.findOneAndUpdate(
       { _id: req.params.reactionId },
-      { $pull: { assignment: { reactionId: req.params.reaction_id } } },
+      { $pull: { assignment: { reactionId: req.params.reactionId } } },
       { runValidators: true, new: true }
     )
       .then((reaction) =>
