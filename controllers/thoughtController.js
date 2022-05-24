@@ -8,7 +8,7 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
   // Get a course
-  getSingleUser(req, res) {
+  getSingleThought(req, res) {
     Thought.findOne({ _id: req.params.thought_id })
       .select('-__v')
       .then((Thought) =>
