@@ -16,7 +16,7 @@ const studentSchema = new Schema(
       unique: true,
       match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
-    thoughtId: [{
+    thought: [{
       type: Schema.Types.ObjectId,
       ref: "Thoughts"
     }],
@@ -41,11 +41,6 @@ UserSchema
     return `${this.friends.length}`;
   })
   // Setter to set the first and last name
-  .set(function (v) {
-    const first = v.split(' ')[0];
-    const last = v.split(' ')[1];
-    this.set({ first, last });
-  });
 
 const User = model('User', UserSchema);
 

@@ -1,5 +1,28 @@
 const { Schema, model } = require('mongoose');
 
+const reactionSchema = new mongoose.Schema({
+  reactionId: {
+      type: Schema.Types.ObjectId,
+      default: () => new Types.ObjectId(),
+  },
+  reactionBody: {
+    type: String,
+    required: true,
+    max_length: 280
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+      type: Date,
+      default: Date.now,
+      get: (date) => {
+        if (date) return date.toISOString().split("T") [0];
+      },
+    },
+});
+
 // Schema to create Student model
 const thoughtSchema = new Schema(
   {
@@ -20,7 +43,7 @@ const thoughtSchema = new Schema(
       type: String,
       required: true,
     },
-    reactions: [reactionSchema],
+    reaction: [reactionSchema],
   },
   {
     toJSON: {
@@ -28,17 +51,12 @@ const thoughtSchema = new Schema(
       getters: true,
     },
   },
+
   thoughtSchema
   .virtual('reactionCount')
   // Getter
   .get(function () {
-    return `${this.reactions.length}`;
-  })
-  // Setter to set the first and last name
-  .set(function (v) {
-    const first = v.split(' ')[0];
-    const last = v.split(' ')[1];
-    this.set({ first, last });
+    return this.reaction.length;
   })
 );
 
