@@ -57,35 +57,30 @@ module.exports = {
   addReaction(req, res) {
     console.log('You are adding an reaction');
     console.log(req.body);
-    Reaction.findOneAndUpdate(
-      { _id: req.params.reactionId },
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
       { $addToSet: { reaction: req.body } },
       { runValidators: true, new: true }
     )
-      .then((reaction) =>
-        !reaction
+      .then((thought) =>
+        !thought
           ? res
             .status(404)
             .json({ message: 'No friend found with that ID :(' })
-          : res.json(reaction)
+          : res.json(thought)
       )
       .catch((err) => res.status(500).json(err));
   },
   // Remove assignment from a student
   removeReaction(req, res) {
-    Reaction.findOneAndUpdate(
-      { _id: req.params.reactionId },
-      { $pull: { assignment: { reactionId: req.params.reactionId } } },
-      { runValidators: true, new: true }
-    )
-      .then((reaction) =>
-        !reaction
-          ? res
-            .status(404)
-            .json({ message: 'No student found with that ID :(' })
-          : res.json(reaction)
+    Thought.findOneAndDelete({ _id: req.params.thoughtId })
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with that ID' })
+          : user.deleteMany({ _id: { $in: course.users } })
       )
-      .catch((err) => res.status(500).json(err))
+      .then(() => res.json({ message: 'User and thoughts deleted!' }))
+      .catch((err) => res.status(500).json(err));
   }
 
 };

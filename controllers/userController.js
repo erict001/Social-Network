@@ -14,7 +14,7 @@ module.exports = {
       .then((User) =>
         !User
           ? res.status(404).json({ message: 'No user with that ID' })
-          : res.json(course)
+          : res.json(User)
       )
       .catch((err) => res.status(500).json(err));
   },
@@ -38,10 +38,10 @@ module.exports = {
       .then(() => res.json({ message: 'User and thoughts deleted!' }))
       .catch((err) => res.status(500).json(err));
   },
-  // Update a course
+  // Update a User
   updateUser(req, res) {
     User.findOneAndUpdate(
-      { _id: req.params.user_id },
+      { _id: req.params.userId },
       { $set: req.body },
       { runValidators: true, new: true }
     )
@@ -53,39 +53,30 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
 
-  // Add a friend to a student
+  // Creating a friend
   addFriend(req, res) {
-    console.log('You are adding an assignment');
-    console.log(req.body);
-    Friend.findOneAndUpdate(
-      { _id: req.params.friend_id },
-      { $addToSet: { assignments: req.body } },
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $set: {friends: req.params.friendId} },
       { runValidators: true, new: true }
     )
-      .then((friend) =>
-        !friend
-          ? res
-            .status(404)
-            .json({ message: 'No friend found with that ID :(' })
-          : res.json(friend)
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
   },
   // Remove assignment from a student
-  removeFriend(req, res) {
-    Friend.findOneAndUpdate(
-      { _id: req.params.friendId },
-      { $pull: { assignment: { assignmentId: req.params.friendId } } },
-      { runValidators: true, new: true }
-    )
-      .then((friend) =>
-        !friend
-          ? res
-            .status(404)
-            .json({ message: 'No friend found with that ID :(' })
-          : res.json(student)
+  deleteFriend(req, res) {
+    User.findOneAndDelete({ _id: req.params.friendId })
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with that ID' })
+          : user.deleteMany({ _id: { $in: course.users } })
       )
-      .catch((err) => res.status(500).json(err))
+      .then(() => res.json({ message: 'User and thoughts deleted!' }))
+      .catch((err) => res.status(500).json(err));
   }
 
 };
